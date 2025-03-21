@@ -118,13 +118,17 @@ jobs:
           tags: |
             ghcr.io/bhanu-palukuri/devsecops-demo-own:main
             ghcr.io/bhanu-palukuri/devsecops-demo-own:latest
-            ghcr.io/bhanu-palukuri/devsecops-demo-own:sha-${{ github.sha }}
+            ghcr.io/bhanu-palukuri/devsecops-demo-own:${{ github.sha }}
           load: true
+      
+      - name: Verify Docker image exists
+        run: |
+          docker pull ghcr.io/bhanu-palukuri/devsecops-demo-own:${{ github.sha }}
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          image-ref: ghcr.io/bhanu-palukuri/devsecops-demo-own:${{ github.sha }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -136,7 +140,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          tags: ghcr.io/bhanu-palukuri/devsecops-demo-own:${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
       
       - name: Set image tag output
@@ -161,7 +165,7 @@ jobs:
       
       - name: Update Kubernetes deployment file
         env:
-          IMAGE_TAG: sha-${{ github.sha }}
+          IMAGE_TAG: ${{ github.sha }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           REGISTRY: ghcr.io
         run: |
