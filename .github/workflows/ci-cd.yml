@@ -121,6 +121,14 @@ jobs:
             ghcr.io/bhanu-palukuri/devsecops-demo-own:${{ github.sha }}
           load: true
       
+      - name: Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/bhanu-palukuri/devsecops-demo-own:${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
+      
       - name: Verify Docker image exists
         run: |
           docker pull ghcr.io/bhanu-palukuri/devsecops-demo-own:${{ github.sha }}
@@ -134,14 +142,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-      
-      - name: Push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/bhanu-palukuri/devsecops-demo-own:${{ github.sha }}
-          labels: ${{ steps.meta.outputs.labels }}
       
       - name: Set image tag output
         id: set_output
