@@ -115,10 +115,10 @@ jobs:
         with:
           context: .
           push: false
-          ######tags: ${{ steps.meta.outputs.tags }}:main,${{ steps.meta.outputs.tags }}:latest,${{ steps.meta.outputs.tags }}:sha-${{ github.sha }}
-          tags: ${{ steps.meta.outputs.tags }}:latest
-          tags: ${{ steps.meta.outputs.tags }}:sha-${{ github.sha }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ghcr.io/bhanu-palukuri/devsecops-demo-own:main
+            ghcr.io/bhanu-palukuri/devsecops-demo-own:latest
+            ghcr.io/bhanu-palukuri/devsecops-demo-own:sha-${{ github.sha }}
           load: true
       
       - name: Run Trivy vulnerability scanner
