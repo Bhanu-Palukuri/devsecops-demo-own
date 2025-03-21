@@ -80,8 +80,6 @@ jobs:
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
-    outputs:
-      image_tag: ${{ steps.set_output.outputs.image_tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -117,7 +115,7 @@ jobs:
         with:
           context: .
           push: false
-          tags: ${{ steps.meta.outputs.tags }}:main
+          tags: ${{ steps.meta.outputs.tags }}:main,${{ steps.meta.outputs.tags }}:latest,${{ steps.meta.outputs.tags }}:sha-${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
           load: true
       
@@ -136,7 +134,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}:main
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
       
       - name: Set image tag output
@@ -180,4 +178,3 @@ jobs:
           git add kubernetes/deployment.yaml
           git commit -m "Update Kubernetes deployment with new image tag: ${{ needs.docker.outputs.image_tag }} [skip ci]" || echo "No changes to commit"
           git push
-
